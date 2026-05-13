@@ -1,0 +1,75 @@
+<mxfile host="app.diagrams.net">
+  <diagram name="ER-v1" id="er_v1">
+    <mxGraphModel dx="1356" dy="726" grid="1" gridSize="10" guides="1" tooltips="1" connect="1" arrows="1" fold="1" page="1" pageScale="1" pageWidth="1400" pageHeight="750" math="0" shadow="0">
+      <root>
+        <mxCell id="0" />
+        <mxCell id="1" parent="0" />
+        <mxCell id="t1" parent="1" style="text;html=1;fontSize=20;fontStyle=1;fontFamily=Microsoft YaHei;align=center;verticalAlign=middle;" value="数据库 E-R 图" vertex="1">
+          <mxGeometry height="35" width="350" x="470" y="15" as="geometry" />
+        </mxCell>
+        <mxCell id="c_head" parent="1" style="shape=rectangle;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=14;fontFamily=Microsoft YaHei;rounded=1;arcSize=8;shadow=1;" value="Customer" vertex="1">
+          <mxGeometry height="40" width="200" x="80" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="c_body" parent="1" style="shape=rectangle;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#6c8ebf;rounded=0;overflow=fill;" value="&lt;div style=&#39;text-align:left;padding:6px;font-size:12px;font-family:Microsoft YaHei;&#39;&gt;&lt;u&gt;&lt;b&gt;customer_unique_id&lt;/b&gt;&lt;/u&gt;  VARCHAR(32)  PK&lt;/div&gt;" vertex="1">
+          <mxGeometry height="36" width="200" x="80" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="o_head" parent="1" style="shape=rectangle;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=14;fontFamily=Microsoft YaHei;rounded=1;arcSize=8;shadow=1;" value="Order" vertex="1">
+          <mxGeometry height="40" width="240" x="440" y="100" as="geometry" />
+        </mxCell>
+        <mxCell id="o_body" parent="1" style="shape=rectangle;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#6c8ebf;rounded=0;overflow=fill;" value="&lt;div style=&#39;text-align:left;padding:6px;font-size:11px;font-family:Microsoft YaHei;line-height:1.7;&#39;&gt;&lt;u&gt;&lt;b&gt;order_id&lt;/b&gt;&lt;/u&gt;  VARCHAR(32)  PK&lt;br&gt;customer_unique_id  VARCHAR(32)  FK&lt;br&gt;order_purchase_timestamp  TIMESTAMP&lt;br&gt;order_delivered_customer_date  TIMESTAMP&lt;br&gt;order_estimated_delivery_date  TIMESTAMP&lt;/div&gt;" vertex="1">
+          <mxGeometry height="119" width="240" x="440" y="140" as="geometry" />
+        </mxCell>
+        <mxCell id="oi_head" parent="1" style="shape=rectangle;whiteSpace=wrap;html=1;fillColor=#dae8fc;strokeColor=#6c8ebf;fontStyle=1;fontSize=14;fontFamily=Microsoft YaHei;rounded=1;arcSize=8;shadow=1;" value="OrderItem" vertex="1">
+          <mxGeometry height="40" width="240" x="440" y="370" as="geometry" />
+        </mxCell>
+        <mxCell id="oi_body" parent="1" style="shape=rectangle;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#6c8ebf;rounded=0;overflow=fill;" value="&lt;div style=&#39;text-align:left;padding:6px;font-size:11px;font-family:Microsoft YaHei;line-height:1.7;&#39;&gt;&lt;u&gt;&lt;b&gt;order_id&lt;/b&gt;&lt;/u&gt;  VARCHAR(32)  PK, FK&lt;br&gt;&lt;u&gt;&lt;b&gt;order_item_id&lt;/b&gt;&lt;/u&gt;  INTEGER  PK&lt;br&gt;product_id  VARCHAR(32)  FK&lt;br&gt;price  NUMERIC(10,2)&lt;br&gt;freight_value  NUMERIC(10,2)&lt;/div&gt;" vertex="1">
+          <mxGeometry height="110" width="240" x="440" y="410" as="geometry" />
+        </mxCell>
+        <mxCell id="p_head" parent="1" style="shape=rectangle;whiteSpace=wrap;html=1;fillColor=#d5e8d4;strokeColor=#82b366;fontStyle=1;fontSize=14;fontFamily=Microsoft YaHei;rounded=1;arcSize=8;shadow=1;" value="Product" vertex="1">
+          <mxGeometry height="40" width="220" x="840" y="400" as="geometry" />
+        </mxCell>
+        <mxCell id="p_body" parent="1" style="shape=rectangle;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#82b366;rounded=0;overflow=fill;" value="&lt;div style=&#39;text-align:left;padding:6px;font-size:11px;font-family:Microsoft YaHei;line-height:1.7;&#39;&gt;&lt;u&gt;&lt;b&gt;product_id&lt;/b&gt;&lt;/u&gt;  VARCHAR(32)  PK&lt;br&gt;product_category_name  VARCHAR(100)&lt;/div&gt;" vertex="1">
+          <mxGeometry height="50" width="220" x="840" y="440" as="geometry" />
+        </mxCell>
+        <mxCell id="r_head" parent="1" style="shape=rectangle;whiteSpace=wrap;html=1;fillColor=#e1d5e7;strokeColor=#9673a6;fontStyle=1;fontSize=14;fontFamily=Microsoft YaHei;rounded=1;arcSize=8;shadow=1;" value="OrderReview" vertex="1">
+          <mxGeometry height="40" width="220" x="840" y="120" as="geometry" />
+        </mxCell>
+        <mxCell id="r_body" parent="1" style="shape=rectangle;whiteSpace=wrap;html=1;fillColor=#FFFFFF;strokeColor=#9673a6;rounded=0;overflow=fill;" value="&lt;div style=&#39;text-align:left;padding:6px;font-size:11px;font-family:Microsoft YaHei;line-height:1.7;&#39;&gt;&lt;u&gt;&lt;b&gt;review_id&lt;/b&gt;&lt;/u&gt;  VARCHAR(32)  PK&lt;br&gt;&lt;u&gt;&lt;b&gt;order_id&lt;/b&gt;&lt;/u&gt;  VARCHAR(32)  PK, FK&lt;br&gt;review_score  SMALLINT&lt;/div&gt;" vertex="1">
+          <mxGeometry height="66" width="220" x="840" y="160" as="geometry" />
+        </mxCell>
+        <mxCell id="rel1" edge="1" parent="1" source="c_head" style="endArrow=ERmany;startArrow=ERone;startFill=0;endFill=0;strokeColor=#333333;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.3;entryDx=0;entryDy=0;" target="o_body" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel1_label" connectable="0" parent="rel1" style="edgeLabel;html=1;fontSize=11;fontFamily=Microsoft YaHei;fontStyle=1;fontColor=#B85450;labelBackgroundColor=#FFFFFF;" value="下单  1 : N" vertex="1">
+          <mxGeometry relative="1" x="-0.1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel2" edge="1" parent="1" source="o_body" style="endArrow=ERmany;startArrow=ERone;startFill=0;endFill=0;strokeColor=#333333;strokeWidth=2;exitX=0.5;exitY=1;exitDx=0;exitDy=0;entryX=0.5;entryY=0;entryDx=0;entryDy=0;" target="oi_head" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel2_label" connectable="0" parent="rel2" style="edgeLabel;html=1;fontSize=11;fontFamily=Microsoft YaHei;fontStyle=1;fontColor=#B85450;labelBackgroundColor=#FFFFFF;" value="包含  1 : N" vertex="1">
+          <mxGeometry relative="1" x="-0.2" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel3" edge="1" parent="1" source="oi_body" style="endArrow=ERone;startArrow=ERmany;startFill=0;endFill=0;strokeColor=#333333;strokeWidth=2;exitX=1;exitY=0.5;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="p_body" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel3_label" connectable="0" parent="rel3" style="edgeLabel;html=1;fontSize=11;fontFamily=Microsoft YaHei;fontStyle=1;fontColor=#B85450;labelBackgroundColor=#FFFFFF;" value="属于  N : 1" vertex="1">
+          <mxGeometry relative="1" x="-0.1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+        <mxCell id="rel4" edge="1" parent="1" source="o_body" style="endArrow=ERmany;startArrow=ERone;startFill=0;endFill=0;strokeColor=#333333;strokeWidth=2;exitX=1;exitY=0.3;exitDx=0;exitDy=0;entryX=0;entryY=0.5;entryDx=0;entryDy=0;" target="r_body" value="">
+          <mxGeometry relative="1" as="geometry" />
+        </mxCell>
+        <mxCell id="rel4_label" connectable="0" parent="rel4" style="edgeLabel;html=1;fontSize=11;fontFamily=Microsoft YaHei;fontStyle=1;fontColor=#B85450;labelBackgroundColor=#FFFFFF;" value="评价  1 : N" vertex="1">
+          <mxGeometry relative="1" x="-0.1" as="geometry">
+            <mxPoint as="offset" />
+          </mxGeometry>
+        </mxCell>
+      </root>
+    </mxGraphModel>
+  </diagram>
+</mxfile>
