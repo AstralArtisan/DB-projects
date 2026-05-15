@@ -1,73 +1,83 @@
 /*
- * ==============================================================================
- * Project 4 参考样例：触发器与权限配置
- * ==============================================================================
- * 本脚本包含复杂的 OpenGauss 专用语法，请仔细阅读注释进行修改。
- * ==============================================================================
+ * Project4：Olist 数据库安全与完整性实验初始化脚本
+ *
+ * 前置条件：
+ * 1. 已完成 Project1 的 schema3.sql 与 migrate_to_3nf.sql。
+ * 2. proj1_3nf.order_items 与 proj1_3nf.products 中已有数据。
+ *
+ * 实验规则：
+ * - 完整性红线：订单项运费 freight_value 不能高于商品售价 price。
+ * - 敏感字段：freight_value 对分析师隐藏，只允许管理员查看。
  */
 
+SET search_path TO proj1_3nf, public;
+
 -- ========================================================
--- 模块 A: 完整性控制 (拦截脏数据)
--- 示例目标：防止录入“高成本烂片” (预算>10000 且 评分<5.0)
+-- 模块 A: 完整性控制 (拦截运费异常的订单项)
 -- ========================================================
 
--- 1. 清理旧对象 (防止重复创建报错)
-DROP TRIGGER IF EXISTS trg_check_quality ON movies;
-DROP FUNCTION IF EXISTS check_movie_quality();
+DROP TRIGGER IF EXISTS trg_check_order_item_freight ON order_items;
+DROP FUNCTION IF EXISTS check_order_item_freight();
 
--- 2. 定义触发器函数 (业务逻辑写在这里)
-CREATE OR REPLACE FUNCTION check_movie_quality() RETURNS TRIGGER AS $$
+CREATE OR REPLACE FUNCTION check_order_item_freight() RETURNS TRIGGER AS $$
 BEGIN
-    -- [TODO: 请修改这里的 IF 判断逻辑]
-    -- NEW 代表即将插入的新数据行
-    -- 示例逻辑：如果 budget > 10000 且 director_score < 5.0，则报错
-    IF NEW.budget > 10000 AND NEW.director_score < 5.0 THEN
-        RAISE EXCEPTION '数据完整性拦截：禁止录入高成本(>1w)低评分(<5.0)的烂片！';
+    IF NEW.freight_value > NEW.price THEN
+        RAISE EXCEPTION '数据完整性拦截：订单项运费 % 不能高于商品售价 %',
+            NEW.freight_value,
+            NEW.price;
     END IF;
-    
-    RETURN NEW; -- 必须返回 NEW，否则数据插不进去
+
+    RETURN NEW;
 END;
 $$ LANGUAGE plpgsql;
 
--- 3. 绑定触发器 (格式通常固定，只需改表名)
--- [TODO: 改为你的表名]
-CREATE TRIGGER trg_check_quality
-BEFORE INSERT ON movies  
-FOR EACH ROW EXECUTE PROCEDURE check_movie_quality();
-
+CREATE TRIGGER trg_check_order_item_freight
+BEFORE INSERT OR UPDATE ON order_items
+FOR EACH ROW EXECUTE PROCEDURE check_order_item_freight();
 
 -- ========================================================
--- 模块 B: 安全性控制 (用户权限与视图)
--- 示例目标：创建分析师账号，只让他看视图，不让他看预算(budget)
+-- 模块 B: 安全性控制 (脱敏视图与分析师权限)
 -- ========================================================
 
--- 1. 创建受限用户
+DROP VIEW IF EXISTS v_public_order_items;
+
+CREATE OR REPLACE VIEW v_public_order_items AS
+SELECT
+    oi.order_id,
+    oi.order_item_id,
+    oi.product_id,
+    p.product_category_name,
+    oi.price
+FROM order_items oi
+JOIN products p
+    ON oi.product_id = p.product_id;
+
 DO $$
 BEGIN
-    -- 检查用户是否存在，如果存在则收回 Schema 权限
     IF EXISTS (SELECT 1 FROM pg_catalog.pg_roles WHERE rolname = 'analyst_user') THEN
-        REVOKE USAGE ON SCHEMA gaussdb FROM analyst_user;
-        REVOKE ALL ON ALL TABLES IN SCHEMA gaussdb FROM analyst_user;
+        REVOKE ALL PRIVILEGES ON ALL TABLES IN SCHEMA proj1_3nf FROM analyst_user;
+        REVOKE USAGE ON SCHEMA proj1_3nf FROM analyst_user;
     END IF;
 END $$;
+
 DROP USER IF EXISTS analyst_user;
 CREATE USER analyst_user WITH PASSWORD 'Analyst@123';
 
--- 2. 创建脱敏视图 (故意不包含 budget 敏感字段)
--- [TODO: 改为你的表名，并只选择非敏感字段]
-CREATE OR REPLACE VIEW v_public_movies AS
-SELECT id, title, director_score FROM movies; 
-
--- 3. 权限分配
-GRANT SELECT ON v_public_movies TO analyst_user;
-REVOKE ALL ON movies FROM analyst_user; -- 确保不能查原表
+GRANT USAGE ON SCHEMA proj1_3nf TO analyst_user;
+REVOKE ALL PRIVILEGES ON order_items FROM analyst_user;
+GRANT SELECT ON v_public_order_items TO analyst_user;
+ALTER USER analyst_user SET search_path TO "$user", proj1_3nf, public;
 
 -- ========================================================
--- 模块 C: 环境补丁 (DO NOT CHANGE / 请勿修改)
--- 解决 OpenGauss "relation does not exist" 报错的关键代码
+-- 模块 C: 初始化验证
 -- ========================================================
-GRANT USAGE ON SCHEMA gaussdb TO analyst_user;
-ALTER USER analyst_user SET search_path TO "$user", gaussdb, public;
 
--- [验证] 尝试查询视图
-SELECT * FROM v_public_movies LIMIT 1;
+SELECT
+    'trigger_ready' AS check_name,
+    tgname AS object_name
+FROM pg_trigger
+WHERE tgname = 'trg_check_order_item_freight';
+
+SELECT *
+FROM v_public_order_items
+LIMIT 1;
