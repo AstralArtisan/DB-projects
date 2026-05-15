@@ -1,3 +1,5 @@
+import os
+
 import pandas as pd
 import psycopg2
 import streamlit as st
@@ -9,22 +11,23 @@ import streamlit as st
 # 1. 数据库管理员 (DBA)
 # 拥有数据库的最高权限 (Superuser)，用于管理模式和执行特权操作。
 ADMIN_CONFIG = {
-    "dbname": "postgres",
-    "user": "gaussdb",
-    "password": "YourPassword@123",  # [TODO: 请核对您的管理员密码]
-    "host": "localhost",
-    "port": "5432",
+    "dbname": os.getenv("DB_NAME", "ecommerce_db"),
+    "user": os.getenv("DB_USER", "gaussdb"),
+    "password": os.getenv("DB_PASSWORD", "MyGauss@123"),
+    "host": os.getenv("DB_HOST", "localhost"),
+    "port": os.getenv("DB_PORT", "15432"),
 }
+SCHEMA = os.getenv("DB_SCHEMA", "proj1_3nf")
 
 # 2. 普通用户 / 数据分析师 (Analyst)
 # 仅拥有特定视图的查询权限，受限于自主存取控制 (DAC) 策略。
 # [TODO: 任务 1] 若在 SQL 脚本中自定义了用户名或密码，请在此处同步更新
 ANALYST_CONFIG = {
-    "dbname": "postgres",
-    "user": "analyst_user",
-    "password": "Analyst@123",
-    "host": "localhost",
-    "port": "5432",
+    "dbname": os.getenv("DB_NAME", "ecommerce_db"),
+    "user": os.getenv("ANALYST_DB_USER", "analyst_user"),
+    "password": os.getenv("ANALYST_DB_PASSWORD", "Analyst@123"),
+    "host": os.getenv("DB_HOST", "localhost"),
+    "port": os.getenv("DB_PORT", "15432"),
 }
 
 
@@ -35,9 +38,13 @@ def get_connection(role_name):
     """根据当前会话的角色身份，建立对应的数据库连接实例"""
     try:
         if role_name == "管理员 (Admin)":
-            return psycopg2.connect(**ADMIN_CONFIG)
+            conn = psycopg2.connect(**ADMIN_CONFIG)
         else:
-            return psycopg2.connect(**ANALYST_CONFIG)
+            conn = psycopg2.connect(**ANALYST_CONFIG)
+        cur = conn.cursor()
+        cur.execute(f"SET search_path TO {SCHEMA}, public;")
+        cur.close()
+        return conn
     except Exception:
         return None
 

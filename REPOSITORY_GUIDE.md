@@ -1,6 +1,6 @@
 # 数据库课程项目仓库管理指南
 
-本仓库用于管理四次数据库课程 project 的框架、数据、代码、实验报告和报告图片。仓库远程地址：
+本仓库用于管理四次数据库课程 project 的框架、数据、代码、实验报告和报告图片。当前按主题聚合项目：Olist 电商线放在 `projects/ecommerce/`，SimpleDB 实验放在 `projects/simpledb/`。仓库远程地址：
 
 ```bash
 git@github.com:AstralArtisan/DB-projects.git
@@ -23,7 +23,7 @@ git@github.com:AstralArtisan/DB-projects.git
 - Python 缓存：`__pycache__/`、`*.pyc`
 - 课程提交压缩包、重复归档包：`*.zip`
 - 弃用代码、不再使用的图片和临时文件
-- 本次已确认弃用的 `proj1/project1_sql脚本示例&前端代码框架/`
+- 本次已确认弃用的 `projects/ecommerce/proj1/project1_sql脚本示例&前端代码框架/`
 
 ## 每次提交前检查
 
@@ -37,10 +37,10 @@ git status --short
 
 ```bash
 git status --short --ignored
-git check-ignore -v proj1/.claude/settings.local.json
-git check-ignore -v proj1/CLAUDE.md
-git check-ignore -v project3/AGENTS.md
-git check-ignore -v proj1/submit.zip
+git check-ignore -v projects/ecommerce/proj1/.claude/settings.local.json
+git check-ignore -v projects/ecommerce/proj1/CLAUDE.md
+git check-ignore -v projects/ecommerce/proj3/AGENTS.md
+git check-ignore -v projects/ecommerce/proj1/submit.zip
 ```
 
 3. 检查大文件。GitHub 普通 Git 单文件硬限制是 100MB；接近该限制时不要直接提交，应改用 Git LFS 或只提交样例数据与获取说明。
@@ -122,5 +122,20 @@ git push
 - `reports/`、PDF、Markdown：实验报告
 - `figures/`、`images/` 或明确命名图片：报告图片
 - `README.md`：运行方式、依赖、数据说明
+
+当前推荐布局：
+
+```text
+projects/
+  ecommerce/
+    shared/
+    proj1/
+    proj3/
+    proj4/
+  simpledb/
+    proj2/
+```
+
+`projects/ecommerce/shared/` 只放跨 project 的配置示例、数据库前置检查和说明，不放 Olist 原始 CSV；原始数据仍归属 `projects/ecommerce/proj1/`。
 
 如果出现弃用代码或不用图片，先移动到本地未跟踪位置或加入 `.gitignore`，不要把不再使用的材料混入提交。

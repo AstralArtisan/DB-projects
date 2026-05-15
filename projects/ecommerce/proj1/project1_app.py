@@ -1,3 +1,5 @@
+import os
+
 import pandas as pd
 import psycopg2
 import streamlit as st
@@ -8,13 +10,13 @@ import plotly.graph_objects as go
 # 数据库连接
 # ==============================================================================
 DB_CONFIG = {
-    "dbname": "ecommerce_db",
-    "user": "gaussdb",
-    "password": "MyGauss@123",
-    "host": "localhost",
-    "port": "15432",
+    "dbname": os.getenv("DB_NAME", "ecommerce_db"),
+    "user": os.getenv("DB_USER", "gaussdb"),
+    "password": os.getenv("DB_PASSWORD", "MyGauss@123"),
+    "host": os.getenv("DB_HOST", "localhost"),
+    "port": os.getenv("DB_PORT", "15432"),
 }
-SCHEMA = "proj1_3nf"
+SCHEMA = os.getenv("DB_SCHEMA", "proj1_3nf")
 
 
 def get_data(sql):
